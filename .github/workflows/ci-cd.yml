@@ -1,0 +1,119 @@
+name: CI/CD
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+  packages: write
+  models: read  # required for GitHub Models API (Copilot failure analysis)
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Restore dependencies
+        run: dotnet restore Seedr.Api.sln
+
+      - name: Build
+        id: build
+        run: |
+          set -o pipefail
+          dotnet build Seedr.Api.sln --no-restore -c Release 2>&1 | tee /tmp/build-output.txt
+        continue-on-error: true
+
+      - name: Run tests
+        id: test
+        if: steps.build.outcome == 'success'
+        run: |
+          set -o pipefail
+          dotnet test Seedr.Api.sln --no-build -c Release 2>&1 | tee /tmp/test-output.txt
+        continue-on-error: true
+
+      - name: Copilot failure analysis
+        if: steps.build.outcome == 'failure' || steps.test.outcome == 'failure'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+          TEST_OUTCOME: ${{ steps.test.outcome }}
+        run: |
+          FAILURE_OUTPUT=""
+          if [ "$BUILD_OUTCOME" == "failure" ] && [ -f /tmp/build-output.txt ]; then
+            FAILURE_OUTPUT+=$'\nBUILD ERRORS:\n'
+            FAILURE_OUTPUT+=$(cat /tmp/build-output.txt)
+          fi
+          if [ "$TEST_OUTCOME" == "failure" ] && [ -f /tmp/test-output.txt ]; then
+            FAILURE_OUTPUT+=$'\n\nTEST FAILURES:\n'
+            FAILURE_OUTPUT+=$(cat /tmp/test-output.txt)
+          fi
+
+          # Truncate to avoid hitting the model's input token limit (~8 KB is safe for gpt-4o-mini)
+          FAILURE_OUTPUT=$(echo "$FAILURE_OUTPUT" | head -c 8000)
+
+          PROMPT="You are a .NET expert. Analyze the following build/test failure output and provide a clear, concise explanation of what is causing the errors and actionable steps to fix them:\n\n${FAILURE_OUTPUT}"
+
+          RESPONSE=$(curl -s --fail --max-time 30 -X POST \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Content-Type: application/json" \
+            "https://models.inference.ai.azure.com/chat/completions" \
+            -d "$(jq -n --arg prompt "$PROMPT" '{
+              model: "gpt-4o-mini",
+              messages: [{"role": "user", "content": $prompt}],
+              max_tokens: 1000
+            }')")
+
+          ANALYSIS=$(echo "$RESPONSE" | jq -r '.choices[0].message.content // "Unable to retrieve analysis from Copilot."')
+
+          {
+            echo "## 🤖 Copilot Failure Analysis"
+            echo ""
+            echo "$ANALYSIS"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fail if build or tests failed
+        if: steps.build.outcome == 'failure' || steps.test.outcome == 'failure'
+        run: exit 1
+
+  publish-docker:
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=raw,value=latest
+            type=sha,prefix=sha-
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}

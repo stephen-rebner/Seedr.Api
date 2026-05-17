@@ -1,6 +1,8 @@
 # Seedr.Api
 
-A .NET 10 Clean Architecture API with Vertical Slice handlers, built with ASP.NET Core Minimal APIs, Entity Framework Core 10, and PostgreSQL.
+The CRUD backbone of the Seedr platform. Manages **environments** (isolated workspaces), **database connections** stored within those environments, and **users**. All endpoints require a valid JWT issued by `entrypoint-auth`.
+
+Built on .NET 10 with ASP.NET Core Minimal APIs, Vertical Slice handlers, Entity Framework Core 10, and PostgreSQL.
 
 ## Architecture
 

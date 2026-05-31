@@ -82,7 +82,7 @@ Integration tests use Testcontainers (spins up a real PostgreSQL container autom
 
 First implemented vertical slice — use it as the reference pattern for new features.
 
-- **Status:** complete and pushed; not yet merged. Built/tested only by review — the dev sandbox has no .NET SDK, so `dotnet build`/`dotnet test` have not been run.
+- **Status:** complete — PR raised and merged into `main`. Built/tested only by review — the dev sandbox has no .NET SDK, so `dotnet build`/`dotnet test` have not been run.
 - **Endpoints** under `/api/v1/environments`: get all, get by id, create (201), update, delete (204). Registered via `MapEnvironmentEndpoints()` in `Program.cs`.
 - **Model:** `Environment` with `Name` (required, max 200) and `Description` (optional/nullable, max 1000), plus `CreatedAtUtc`/`UpdatedAtUtc`.
 - **Id:** auto-incrementing `int` (PostgreSQL `IDENTITY` column), not a Guid. Note: the entity type is named `Environment`, so consuming files use a `using Environment = Seedr.Api.Features.Environments.Models.Environment;` alias to avoid clashing with `System.Environment`.

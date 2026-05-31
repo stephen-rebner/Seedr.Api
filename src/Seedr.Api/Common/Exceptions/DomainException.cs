@@ -1,4 +1,4 @@
-namespace Seedr.Api.Core.Domain.Exceptions;
+namespace Seedr.Api.Common.Exceptions;
 
 public class DomainException : Exception
 {

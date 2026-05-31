@@ -1,4 +1,4 @@
-namespace Seedr.Api.Application.Common.Interfaces;
+namespace Seedr.Api.Common.Interfaces;
 
 public interface IHandler<TRequest, TResponse>
 {

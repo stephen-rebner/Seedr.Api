@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using Seedr.Api.Core.Domain.Exceptions;
+using Seedr.Api.Common.Exceptions;
 using System.Net;
 using System.Text.Json;
 
-namespace Seedr.Api.Service.Api.Middleware;
+namespace Seedr.Api.Common.Middleware;
 
 public class ExceptionHandlingMiddleware
 {

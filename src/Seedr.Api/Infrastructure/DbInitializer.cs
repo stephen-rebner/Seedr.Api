@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using Seedr.Api.Infrastructure.Data;
 
-namespace Seedr.Api.Infrastructure.Data;
+namespace Seedr.Api.Infrastructure;
 
 public static class DbInitializer
 {

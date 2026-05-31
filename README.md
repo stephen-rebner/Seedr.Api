@@ -6,16 +6,25 @@ Built on .NET 10 with ASP.NET Core Minimal APIs, Vertical Slice handlers, Entity
 
 ## Architecture
 
+**Vertical slice** — all application code lives in a single project (`src/Seedr.Api`). Each feature is a self-contained slice owning everything it needs end-to-end (endpoints, handlers, models, repository, validators). Shared infrastructure and cross-cutting concerns live in well-known top-level folders (`Infrastructure`, `Common`).
+
 ```
-Core ← Application ← Infrastructure ← Service.Api
+src/Seedr.Api/
+├── Features/<FeatureName>/
+│   ├── Endpoints/      Minimal API route definitions
+│   ├── Handlers/       Request handlers (commands and queries)
+│   ├── Models/         Domain entity + request/response DTOs
+│   ├── Repositories/   Feature-specific repository interface + EF implementation
+│   └── Validators/     FluentValidation validators
+├── Infrastructure/     EF Core DbContext, configurations, migrations, DI wiring
+└── Common/             Exceptions, shared interfaces, middleware
 ```
 
-| Layer | Project | Responsibility |
-|-------|---------|---------------|
-| Domain | `Seedr.Api.Core` | Domain models, repository interfaces, domain exceptions |
-| Application | `Seedr.Api.Application` | Vertical slice handlers, validators, DTOs |
-| Infrastructure | `Seedr.Api.Infrastructure` | EF Core DbContext, repository implementations, migrations |
-| API | `Seedr.Api.Service.Api` | Minimal API endpoints, middleware, DI wiring |
+| Concern | Location | Responsibility |
+|---------|----------|---------------|
+| Features | `src/Seedr.Api/Features` | Self-contained vertical slices (endpoints, handlers, models, repositories, validators) |
+| Infrastructure | `src/Seedr.Api/Infrastructure` | EF Core DbContext, entity configurations, migrations, `AddInfrastructure()` DI wiring |
+| Common | `src/Seedr.Api/Common` | Domain exceptions, shared handler interface, exception-handling middleware |
 
 ## Prerequisites
 
@@ -46,8 +55,7 @@ This starts:
 Start a PostgreSQL instance (or update the connection string), then:
 
 ```bash
-cd src/Seedr.Api.Service.Api
-dotnet run
+dotnet run --project src/Seedr.Api
 ```
 
 The connection string is configured in `appsettings.json`:
@@ -68,8 +76,8 @@ To add a new migration manually:
 
 ```bash
 dotnet ef migrations add <MigrationName> \
-  --project src/Seedr.Api.Infrastructure \
-  --startup-project src/Seedr.Api.Service.Api
+  --project src/Seedr.Api \
+  --output-dir Infrastructure/Data/Migrations
 ```
 
 ## Solution Structure
@@ -77,34 +85,29 @@ dotnet ef migrations add <MigrationName> \
 ```
 Seedr.Api/
 ├── src/
-│   ├── Seedr.Api.Core/
-│   │   ├── Domain/
-│   │   │   ├── Exceptions/
-│   │   │   └── Models/
-│   │   └── Repositories/
-│   ├── Seedr.Api.Application/
-│   │   ├── Common/Interfaces/
-│   │   ├── DTOs/
-│   │   ├── Options/
-│   │   └── Services/
-│   ├── Seedr.Api.Infrastructure/
-│   │   ├── Configurations/EntityConfigurations/
-│   │   ├── Data/
-│   │   │   ├── SeedrDbContext.cs
-│   │   │   └── DbInitializer.cs
-│   │   └── Repositories/
-│   └── Seedr.Api.Service.Api/
-│       ├── Endpoints/
-│       ├── Middleware/
-│       │   └── ExceptionHandlingMiddleware.cs
+│   └── Seedr.Api/
+│       ├── Features/
+│       │   └── Environments/
+│       │       ├── Endpoints/
+│       │       ├── Handlers/
+│       │       ├── Models/
+│       │       ├── Repositories/
+│       │       └── Validators/
+│       ├── Infrastructure/
+│       │   ├── Data/
+│       │   │   ├── Configurations/
+│       │   │   ├── Migrations/
+│       │   │   └── SeedrDbContext.cs
+│       │   ├── DbInitializer.cs
+│       │   └── DependencyInjection.cs
+│       ├── Common/
+│       │   ├── Exceptions/
+│       │   ├── Interfaces/
+│       │   └── Middleware/
 │       └── Program.cs
 ├── tests/
-│   ├── Seedr.Api.Core.Tests/
-│   ├── Seedr.Api.Application.Tests/
-│   ├── Seedr.Api.Infrastructure.Tests/
-│   ├── Seedr.Api.Infrastructure.IntegrationTests/
-│   ├── Seedr.Api.Service.Api.Tests/
-│   └── Seedr.Api.Service.Api.IntegrationTests/
+│   └── Seedr.Api.Tests/
+│       └── Features/            # Unit and integration tests mirroring the feature structure
 ├── Dockerfile
 ├── docker-compose.yml
 └── Seedr.Api.sln
@@ -116,12 +119,8 @@ Seedr.Api/
 # Run all tests
 dotnet test
 
-# Run a specific project
-dotnet test tests/Seedr.Api.Core.Tests
-
-# Run integration tests (requires Docker for Testcontainers)
-dotnet test tests/Seedr.Api.Infrastructure.IntegrationTests
-dotnet test tests/Seedr.Api.Service.Api.IntegrationTests
+# Run the test project (requires Docker for Testcontainers integration tests)
+dotnet test tests/Seedr.Api.Tests
 ```
 
 ## Tech Stack

@@ -12,7 +12,6 @@ public class UpdateEnvironmentRequestValidator : AbstractValidator<UpdateEnviron
             .MaximumLength(200);
 
         RuleFor(x => x.Description)
-            .NotNull()
             .MaximumLength(1000);
     }
 }

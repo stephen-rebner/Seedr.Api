@@ -17,7 +17,6 @@ public class EnvironmentConfiguration : IEntityTypeConfiguration<Environment>
             .HasMaxLength(200);
 
         builder.Property(e => e.Description)
-            .IsRequired()
             .HasMaxLength(1000);
 
         builder.Property(e => e.CreatedAtUtc)

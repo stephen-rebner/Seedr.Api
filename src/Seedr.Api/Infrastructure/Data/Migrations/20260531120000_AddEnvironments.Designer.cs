@@ -34,7 +34,6 @@ partial class AddEnvironments
                 .HasColumnType("timestamp with time zone");
 
             b.Property<string>("Description")
-                .IsRequired()
                 .HasMaxLength(1000)
                 .HasColumnType("character varying(1000)");
 

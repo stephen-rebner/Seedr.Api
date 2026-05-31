@@ -17,7 +17,7 @@ public partial class AddEnvironments : Migration
             {
                 Id = table.Column<Guid>(type: "uuid", nullable: false),
                 Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                Description = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
+                Description = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
                 CreatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 UpdatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
             },

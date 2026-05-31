@@ -44,12 +44,12 @@ public class CreateEnvironmentRequestValidatorTests
     }
 
     [Test]
-    public void Validate_WithNullDescription_IsInvalid()
+    public void Validate_WithNullDescription_IsValid()
     {
-        var request = new CreateEnvironmentRequest("Production", null!);
+        var request = new CreateEnvironmentRequest("Production", null);
 
         ValidationResult result = _validator.Validate(request);
 
-        Assert.That(result.IsValid, Is.False);
+        Assert.That(result.IsValid, Is.True);
     }
 }

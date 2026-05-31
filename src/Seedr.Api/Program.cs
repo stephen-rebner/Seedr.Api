@@ -1,5 +1,6 @@
 using FluentValidation;
 using Seedr.Api.Common.Middleware;
+using Seedr.Api.Features.Environments.Endpoints;
 using Seedr.Api.Infrastructure;
 using Seedr.Api.Infrastructure.Data;
 
@@ -21,8 +22,7 @@ using (var scope = app.Services.CreateScope())
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseHttpsRedirection();
 
-// Map feature endpoints here, e.g.:
-// app.MapGroup("/api/v1/environments").MapEnvironmentEndpoints();
+app.MapGroup("/api/v1/environments").MapEnvironmentEndpoints();
 
 app.Run();
 

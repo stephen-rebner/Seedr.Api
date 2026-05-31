@@ -75,3 +75,18 @@ Integration tests use Testcontainers (spins up a real PostgreSQL container autom
 | ORM | Entity Framework Core 10 + Npgsql |
 | Validation | FluentValidation 12 |
 | Testing | NUnit 4 + Testcontainers.PostgreSql |
+
+## Progress log
+
+### Environments feature (branch `claude/environments-feature-endpoints-uRK1H`)
+
+First implemented vertical slice — use it as the reference pattern for new features.
+
+- **Status:** complete and pushed; not yet merged. Built/tested only by review — the dev sandbox has no .NET SDK, so `dotnet build`/`dotnet test` have not been run.
+- **Endpoints** under `/api/v1/environments`: get all, get by id, create (201), update, delete (204). Registered via `MapEnvironmentEndpoints()` in `Program.cs`.
+- **Model:** `Environment` with `Name` (required, max 200) and `Description` (optional/nullable, max 1000), plus `CreatedAtUtc`/`UpdatedAtUtc`.
+- **Id:** auto-incrementing `int` (PostgreSQL `IDENTITY` column), not a Guid. Note: the entity type is named `Environment`, so consuming files use a `using Environment = Seedr.Api.Features.Environments.Models.Environment;` alias to avoid clashing with `System.Environment`.
+- **Repository + handlers** registered in `Infrastructure/DependencyInjection.cs` via `AddEnvironmentsFeature()`. Validation runs in the create/update endpoints (FluentValidation → 400 `ValidationProblem`); missing records throw `NotFoundException` → 404.
+- **Migration:** initial `AddEnvironments` migration was hand-written (no SDK to scaffold). Regenerate with `dotnet ef migrations add` once an SDK is available to guarantee the model snapshot matches EF's output.
+- **Tests:** validator unit tests + Testcontainers-backed endpoint integration tests in `tests/Seedr.Api.Tests/Features/Environments`.
+- **README** was updated from the old clean-architecture layout to the current vertical-slice structure.

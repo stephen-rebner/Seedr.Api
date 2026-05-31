@@ -23,9 +23,11 @@ partial class SeedrDbContextModelSnapshot : ModelSnapshot
 
         modelBuilder.Entity("Seedr.Api.Features.Environments.Models.Environment", b =>
         {
-            b.Property<Guid>("Id")
+            b.Property<int>("Id")
                 .ValueGeneratedOnAdd()
-                .HasColumnType("uuid");
+                .HasColumnType("integer");
+
+            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
             b.Property<DateTime>("CreatedAtUtc")
                 .HasColumnType("timestamp with time zone");

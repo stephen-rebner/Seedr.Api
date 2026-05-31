@@ -11,7 +11,7 @@ public static class EnvironmentEndpoints
         group.MapGet("/", async (GetAllEnvironmentsHandler handler, CancellationToken cancellationToken) =>
             Results.Ok(await handler.HandleAsync(cancellationToken)));
 
-        group.MapGet("/{id:guid}", async (Guid id, GetEnvironmentHandler handler, CancellationToken cancellationToken) =>
+        group.MapGet("/{id:int}", async (int id, GetEnvironmentHandler handler, CancellationToken cancellationToken) =>
             Results.Ok(await handler.HandleAsync(id, cancellationToken)));
 
         group.MapPost("/", async (
@@ -30,8 +30,8 @@ public static class EnvironmentEndpoints
             return Results.Created($"/api/v1/environments/{response.Id}", response);
         });
 
-        group.MapPut("/{id:guid}", async (
-            Guid id,
+        group.MapPut("/{id:int}", async (
+            int id,
             UpdateEnvironmentRequest request,
             IValidator<UpdateEnvironmentRequest> validator,
             UpdateEnvironmentHandler handler,
@@ -47,7 +47,7 @@ public static class EnvironmentEndpoints
             return Results.Ok(response);
         });
 
-        group.MapDelete("/{id:guid}", async (Guid id, DeleteEnvironmentHandler handler, CancellationToken cancellationToken) =>
+        group.MapDelete("/{id:int}", async (int id, DeleteEnvironmentHandler handler, CancellationToken cancellationToken) =>
         {
             await handler.HandleAsync(id, cancellationToken);
             return Results.NoContent();

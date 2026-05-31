@@ -1,7 +1,7 @@
 namespace Seedr.Api.Features.Environments.Models;
 
 public record EnvironmentResponse(
-    Guid Id,
+    int Id,
     string Name,
     string? Description,
     DateTime CreatedAtUtc,

@@ -13,7 +13,7 @@ public class DeleteEnvironmentHandler
         _repository = repository;
     }
 
-    public async Task HandleAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task HandleAsync(int id, CancellationToken cancellationToken = default)
     {
         var environment = await _repository.GetByIdAsync(id, cancellationToken)
             ?? throw new NotFoundException(nameof(Environment), id);

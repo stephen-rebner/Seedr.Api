@@ -22,7 +22,6 @@ public class CreateEnvironmentHandler : IHandler<CreateEnvironmentRequest, Envir
 
         var environment = new Environment
         {
-            Id = Guid.NewGuid(),
             Name = request.Name,
             Description = request.Description,
             CreatedAtUtc = now,

@@ -11,6 +11,7 @@ namespace Seedr.Api.Tests.Features.Environments.Endpoints;
 public class EnvironmentEndpointsTests
 {
     private const string BaseUrl = "/api/v1/environments";
+    private const int MissingId = 2147483647;
 
     private PostgreSqlContainer _container = null!;
     private WebApplicationFactory<Program> _factory = null!;
@@ -52,7 +53,7 @@ public class EnvironmentEndpointsTests
 
         var created = await response.Content.ReadFromJsonAsync<EnvironmentResponse>();
         Assert.That(created, Is.Not.Null);
-        Assert.That(created!.Id, Is.Not.EqualTo(Guid.Empty));
+        Assert.That(created!.Id, Is.GreaterThan(0));
         Assert.That(created.Name, Is.EqualTo(request.Name));
         Assert.That(created.Description, Is.EqualTo(request.Description));
     }
@@ -84,7 +85,7 @@ public class EnvironmentEndpointsTests
     [Test]
     public async Task GetById_WhenMissing_ReturnsNotFound()
     {
-        var response = await _client.GetAsync($"{BaseUrl}/{Guid.NewGuid()}");
+        var response = await _client.GetAsync($"{BaseUrl}/{MissingId}");
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
     }
@@ -121,7 +122,7 @@ public class EnvironmentEndpointsTests
     {
         var request = new UpdateEnvironmentRequest("Missing", "Does not exist");
 
-        var response = await _client.PutAsJsonAsync($"{BaseUrl}/{Guid.NewGuid()}", request);
+        var response = await _client.PutAsJsonAsync($"{BaseUrl}/{MissingId}", request);
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
     }
@@ -141,7 +142,7 @@ public class EnvironmentEndpointsTests
     [Test]
     public async Task Delete_WhenMissing_ReturnsNotFound()
     {
-        var response = await _client.DeleteAsync($"{BaseUrl}/{Guid.NewGuid()}");
+        var response = await _client.DeleteAsync($"{BaseUrl}/{MissingId}");
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
     }

@@ -2,7 +2,7 @@ namespace Seedr.Api.Features.Environments.Models;
 
 public class Environment
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
     public string Name { get; set; } = string.Empty;
 

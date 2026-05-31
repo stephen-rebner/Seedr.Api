@@ -19,7 +19,7 @@ public class EnvironmentRepository : IEnvironmentRepository
             .OrderBy(e => e.Name)
             .ToListAsync(cancellationToken);
 
-    public async Task<Environment?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
+    public async Task<Environment?> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
         await _dbContext.Environments
             .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
 

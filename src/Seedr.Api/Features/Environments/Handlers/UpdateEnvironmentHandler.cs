@@ -15,7 +15,7 @@ public class UpdateEnvironmentHandler
     }
 
     public async Task<EnvironmentResponse> HandleAsync(
-        Guid id,
+        int id,
         UpdateEnvironmentRequest request,
         CancellationToken cancellationToken = default)
     {

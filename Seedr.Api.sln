@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
@@ -174,3 +175,41 @@ Global
 		{A1EBD1D1-324C-439D-8FF0-1D05F254E98D} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 EndGlobal
+=======
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seedr.Api", "src\Seedr.Api\Seedr.Api.csproj", "{9E096FA6-608F-402F-8AF4-5A4E4553743E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seedr.Api.Tests", "tests\Seedr.Api.Tests\Seedr.Api.Tests.csproj", "{A1EBD1D1-324C-439D-8FF0-1D05F254E98D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9E096FA6-608F-402F-8AF4-5A4E4553743E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E096FA6-608F-402F-8AF4-5A4E4553743E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E096FA6-608F-402F-8AF4-5A4E4553743E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E096FA6-608F-402F-8AF4-5A4E4553743E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1EBD1D1-324C-439D-8FF0-1D05F254E98D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1EBD1D1-324C-439D-8FF0-1D05F254E98D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1EBD1D1-324C-439D-8FF0-1D05F254E98D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1EBD1D1-324C-439D-8FF0-1D05F254E98D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9E096FA6-608F-402F-8AF4-5A4E4553743E} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{A1EBD1D1-324C-439D-8FF0-1D05F254E98D} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+	EndGlobalSection
+EndGlobal
+>>>>>>> 42fdefdd514107a143478a5a518c86b882e453e4
